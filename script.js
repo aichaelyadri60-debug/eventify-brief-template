@@ -49,4 +49,22 @@ function switchScreen(screenId) {
 
 
 
+function addvariant(){
+  const parent =document.getElementById("variants-list");
+  const enfant =document.createElement('div');
+  enfant.innerHTML =`<div class="variant-row">
+                                        <input type="text" class="input variant-row__name" placeholder="Variant name (e.g., 'Early Bird')" />
+                                        <input type="number" class="input variant-row__qty" placeholder="Qty" min="1" />
+                                        <input type="number" class="input variant-row__value" placeholder="Value" step="0.01" />
+                                        <select class="select variant-row__type">
+                                            <option value="fixed">Fixed Price</option>
+                                            <option value="percentage">Percentage Off</option>
+                                        </select>
+                                        <button type="button" class="btn btn--danger btn--small variant-row__remove">Remove</button>
+                                    </div>`
+
+    parent.appendChild(enfant);
+
+}
+
 
