@@ -40,8 +40,13 @@ function switchScreen(screenId) {
             
         }
          if (s.getAttribute("data-screen") === "list") {
-      afficherevenements(); // affiche les événements quand on ouvre l’onglet Events
+      afficherevenements(); 
+
+
     }
+    if (s.getAttribute("data-screen") === "archive") {
+    afficherarchive(); 
+}
     }
 
     
@@ -170,7 +175,7 @@ formulaire.addEventListener("submit", (e) => {
     setTimeout(() => {
          erreur.classList.add("is-hidden");
          erreur.innerHTML = "";
-    }, 4000);
+    }, 3000);
 
 
   let allevent = JSON.parse(localStorage.getItem("Evenements"))||[];
@@ -186,7 +191,7 @@ formulaire.addEventListener("submit", (e) => {
 
 
 function afficherevenements() {
-  const body = document.querySelector(".table__body");
+  const body = document.querySelectorAll(".table__body")[0];
   const data = JSON.parse(localStorage.getItem("Evenements")) || [];
 
   body.innerHTML = ""; 
@@ -211,8 +216,8 @@ function afficherevenements() {
 
 function supprimerevent(index){
    let events = JSON.parse(localStorage.getItem("Evenements")) || [];
-   let archives = JSON.parse(localStorage.getItem("Archives")) || [];
-   const parent =document.querySelector(".table__row")[index];
+   let archives = JSON.parse(localStorage.getItem("archives")) || [];
+   const parent =document.querySelectorAll(".table__row")[index];
    const suppression =events.splice(index ,1)[0];
    archives.push(suppression);
 
@@ -223,14 +228,67 @@ function supprimerevent(index){
   
   alert("Événement supprimé !");
    afficherevenements();
+   afficherarchive();
    
 
 
 }
+document.getElementById("sort-events").addEventListener("change", (e) => {
+  const value = e.target.value;
+  if (value === "title-asc") Sortasc();
+  if (value === "title-desc") Sortdesc();
+
+});
+function Sortasc(){
+  let events = JSON.parse(localStorage.getItem("Evenements"))||[];
+  const body = document.querySelectorAll(".table__body")[0];
+
+
+  for(i =0 ;i<events.length -1 ;i++){
+    for(j=0;j<events.length-i-1 ;j++){
+      if(events[j].titre.toLowerCase() > events[j+1].titre.toLowerCase()){
+        let temp =events[j];
+        events[j]=events[j+1];
+        events[j+1] =temp;
+      }
+    }
+  }
+
+
+  body.innerHTML = "";
+  events.forEach((e, index) => {
+    body.innerHTML += `
+      <tr class="table__row" data-event-id="${index}">
+        <td>${index + 1}</td>
+        <td>${e.titre}</td>
+        <td>${e.place}</td>
+        <td>${e.prix}</td>
+        <td><span class="badge">${e.variant ? e.variant.length : 0}</span></td>
+        <td>
+          <button class="btn btn--small" data-action="details">Details</button>
+          <button class="btn btn--small" data-action="edit">Edit</button>
+          <button class="btn btn--danger btn--small" onclick="supprimerevent(${index})">Delete</button>
+        </td>
+      </tr>
+    `;
+  });
+
+  
+}
+
+
+
+
+
+
+
+
+
 
 function afficherarchive(){
   const archives =JSON.parse(localStorage.getItem("archives"))||[];
-  const body =document.querySelector(".table__body")[1];
+  const body =document.querySelectorAll(".table__body")[1];
+  console.log(body)
    body.innerHTML = "";
   archives.forEach((a,index) => {
     body.innerHTML +=`<tr class="table__row" data-event-id="${index}">
