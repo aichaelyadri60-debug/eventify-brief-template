@@ -1,4 +1,5 @@
 
+
 function switchScreen(screenId) {
     // TODO:
     const Bouttons =document.querySelectorAll(".sidebar__btn");
@@ -74,7 +75,7 @@ function RemoveVariant(element){
 }
 
 const formulaire = document.getElementById("event-form");
-let id=0;
+let id=1;
 formulaire.addEventListener("submit", (e) => {
   e.preventDefault();
 
@@ -195,7 +196,7 @@ function afficherevenements() {
   data.forEach((e, index) => {
     body.innerHTML += `
       <tr class="table__row" data-event-id="${index}">
-        <td>${index + 1}</td>
+        <td>${index +1}</td>
         <td>${e.titre}</td>
         <td>${e.place}</td>
         <td>${e.prix}</td>
@@ -203,16 +204,28 @@ function afficherevenements() {
         <td>
           <button class="btn btn--small" data-action="details" data-event-id="${index}">Details</button>
           <button class="btn btn--small" data-action="edit" data-event-id="${index}">Edit</button>
-          <button class="btn btn--danger btn--small" data-action="archive" data-event-id="${index}" onclick="supprimerevent(this)">Delete</button>
+          <button class="btn btn--danger btn--small" data-action="archive" data-event-id="${index}" onclick="supprimerevent(${index})">Delete</button>
         </td>
       </tr>
     `;
   });
 }
 
+function supprimerevent(index){
+   let events = JSON.parse(localStorage.getItem("Evenements")) || [];
+   let archives = JSON.parse(localStorage.getItem("Archives")) || [];
+   const parent =document.querySelector(".table__row")[index];
+   const suppression =events.splice(index ,1)[0];
+   archives.push(suppression);
+
+   localStorage.setItem("Evenements" ,JSON.stringify(events));
+   localStorage.setItem("archives",JSON.stringify(archives));
 
 
-
-function supprimerevent(element){
   
+  alert("Événement supprimé !");
+   afficherevenements();
+   
+
+
 }
