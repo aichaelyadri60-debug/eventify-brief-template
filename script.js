@@ -242,8 +242,6 @@ document.getElementById("sort-events").addEventListener("change", (e) => {
 function Sortasc(){
   let events = JSON.parse(localStorage.getItem("Evenements"))||[];
   const body = document.querySelectorAll(".table__body")[0];
-
-
   for(i =0 ;i<events.length -1 ;i++){
     for(j=0;j<events.length-i-1 ;j++){
       if(events[j].titre.toLowerCase() > events[j+1].titre.toLowerCase()){
@@ -253,8 +251,6 @@ function Sortasc(){
       }
     }
   }
-
-
   body.innerHTML = "";
   events.forEach((e, index) => {
     body.innerHTML += `
@@ -271,9 +267,41 @@ function Sortasc(){
         </td>
       </tr>
     `;
-  });
+  }); 
+}
 
-  
+
+function Sortdesc(){
+  const events =JSON.parse(localStorage.getItem("Evenements"))||[];
+  // console.log(events);
+  for(i=0;i<events.length-1;i++){
+    for(j=0;j<events.length-i-1;j++){
+      if(events[j].titre.toLowerCase()<events[j+1].titre.toLowerCase()){
+        let temp =events[j];
+        events[j]=events[j+1];
+        events[j+1]=temp;
+      }
+    }
+  }
+
+  const body =document.querySelectorAll(".table__body")[0];
+    // console.log(body);
+     body.innerHTML = "";
+  events.forEach((e,index) => {
+    body.innerHTML +=`<tr class="table__row" data-event-id="${index}">
+                                    <td>${index+1}</td>
+                                    <td>${e.titre}</td>
+                                    <td>${e.place}</td>
+                                    <td>${e.prix}</td>
+                                    <td><span class="badge">${e.variant?e.variant.length:0}</span></td>
+                                    <td>
+                                        <button class="btn btn--small" data-action="details" >Details</button>
+                                        <button class="btn btn--small" data-action="edit" >Edit</button>
+                                        <button class="btn btn--danger btn--small" data-action="archive" "onclick="supprimerevent(${index})">Delete</button>
+                                    </td>
+                                </tr>`
+
+  });
 }
 
 
@@ -288,7 +316,7 @@ function Sortasc(){
 function afficherarchive(){
   const archives =JSON.parse(localStorage.getItem("archives"))||[];
   const body =document.querySelectorAll(".table__body")[1];
-  console.log(body)
+  // console.log(body)
    body.innerHTML = "";
   archives.forEach((a,index) => {
     body.innerHTML +=`<tr class="table__row" data-event-id="${index}">
