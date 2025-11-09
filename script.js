@@ -40,7 +40,12 @@ function switchScreen(screenId) {
             suTitle.textContent = headerTitles[s.getAttribute("data-screen")].subTitle;
             
         }
+         if (s.getAttribute("data-screen") === "list") {
+      afficherevenements(); // affiche les événements quand on ouvre l’onglet Events
     }
+    }
+
+    
 }
 
 
@@ -69,7 +74,7 @@ function RemoveVariant(element){
 }
 
 const formulaire = document.getElementById("event-form");
-let id;
+let id=0;
 formulaire.addEventListener("submit", (e) => {
   e.preventDefault();
 
@@ -166,7 +171,7 @@ formulaire.addEventListener("submit", (e) => {
     setTimeout(() => {
          erreur.classList.add("is-hidden");
          erreur.innerHTML = "";
-}, 4000);
+    }, 4000);
 
 
   let allevent = JSON.parse(localStorage.getItem("Evenements"))||[];
@@ -175,7 +180,39 @@ formulaire.addEventListener("submit", (e) => {
   localStorage.setItem("Evenements", JSON.stringify(allevent));
   formulaire.reset(); 
   document.getElementById("variants-list").innerHTML = ""; 
+  afficherevenements();
 
 })
 
 
+
+function afficherevenements() {
+  const body = document.querySelector(".table__body");
+  const data = JSON.parse(localStorage.getItem("Evenements")) || [];
+
+  body.innerHTML = ""; 
+
+  data.forEach((e, index) => {
+    body.innerHTML += `
+      <tr class="table__row" data-event-id="${index}">
+        <td>${index + 1}</td>
+        <td>${e.titre}</td>
+        <td>${e.place}</td>
+        <td>${e.prix}</td>
+        <td><span class="badge">${e.variant ? e.variant.length : 0}</span></td>
+        <td>
+          <button class="btn btn--small" data-action="details" data-event-id="${index}">Details</button>
+          <button class="btn btn--small" data-action="edit" data-event-id="${index}">Edit</button>
+          <button class="btn btn--danger btn--small" data-action="archive" data-event-id="${index}" onclick="supprimerevent(this)">Delete</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+
+
+
+function supprimerevent(element){
+  
+}
