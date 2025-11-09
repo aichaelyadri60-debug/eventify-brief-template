@@ -205,7 +205,7 @@ function afficherevenements() {
         <td>${index +1}</td>
         <td>${e.titre}</td>
         <td>${e.place}</td>
-        <td>${e.prix}</td>
+        <td>${e.prix}  $</td>
         <td><span class="badge">${e.variant ? e.variant.length : 0}</span></td>
         <td>
           <button class="btn btn--small" data-action="details" data-event-id="${index}">Details</button>
@@ -220,7 +220,6 @@ function afficherevenements() {
 function supprimerevent(index){
    let events = JSON.parse(localStorage.getItem("Evenements")) || [];
    let archives = JSON.parse(localStorage.getItem("archives")) || [];
-   const parent =document.querySelectorAll(".table__row")[index];
    const suppression =events.splice(index ,1)[0];
    archives.push(suppression);
 
@@ -256,7 +255,7 @@ function affichage(){
         <td>${index + 1}</td>
         <td>${e.titre}</td>
         <td>${e.place}</td>
-        <td>${e.prix}</td>
+        <td>${e.prix}  $</td>
         <td><span class="badge">${e.variant ? e.variant.length : 0}</span></td>
         <td>
           <button class="btn btn--small" data-action="details">Details</button>
@@ -361,7 +360,7 @@ function filtrerEvenements() {
           <td>${index + 1}</td>
           <td>${e.titre}</td>
           <td>${e.place}</td>
-          <td>${e.prix}</td>
+          <td>${e.prix}   $</td>
           <td><span class="badge">${e.variant ? e.variant.length : 0}</span></td>
           <td>
             <button class="btn btn--small">Details</button>
@@ -392,7 +391,7 @@ function afficherarchive(){
                                     <td>${index+1}</td>
                                     <td>${a.titre}</td>
                                     <td>${a.place}</td>
-                                    <td>${a.prix}</td>
+                                    <td>${a.prix}  $</td>
                                     <td>
                                         <button class="btn btn--small" data-action="restore" data-event-id="${index}" onclick="restaurerArchive(${index})">Restore</button>
                                     </td>
@@ -426,6 +425,22 @@ function Statistics(){
   const totalevents=events.length;
   const total =document.getElementById("stat-total-events");
   total.textContent =totalevents;
+
+  let places=0;
+   events.forEach((e)=>{
+    places +=Number(e.place) ;
+   })
+   let totalplace =document.getElementById("stat-total-seats");
+   totalplace.textContent =places ;
+
+
+   let prixtotal =0;
+   events.forEach((e)=>{
+    prixtotal +=Number(e.prix) ;
+   })
+   let totalprix =document.getElementById("stat-total-price");
+   totalprix.textContent ="$ " +prixtotal ;
+
 }
 
 
