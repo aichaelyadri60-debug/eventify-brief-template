@@ -311,6 +311,22 @@ function Sortdesc(){
   }
 
 
+    function Sortdescprice(){
+    const events =JSON.parse(localStorage.getItem("Evenements"))||[];
+     for(i=0;i<events.length-1;i++){
+    for(j=0;j<events.length-i-1;j++){
+      if(Number(events[j].prix) < Number(events[j+1].prix)){
+        let temp =events[j];
+        events[j]=events[j+1];
+        events[j+1]=temp;
+      }
+    }
+  }
+  localStorage.setItem("Evenements", JSON.stringify(events));
+  affichage();
+  }
+
+
 
 
 
