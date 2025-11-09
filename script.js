@@ -344,6 +344,33 @@ function Sortdesc(){
   }
 
 
+function filtrerEvenements() {
+  const input = document.getElementById("search-events").value.toLowerCase();
+  const events = JSON.parse(localStorage.getItem("Evenements")) || [];
+  const body = document.querySelectorAll(".table__body")[0];
+  body.innerHTML = "";
+
+  events.forEach((e, index) => {
+    if (e.titre.toLowerCase().includes(input)) {
+      body.innerHTML += `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${e.titre}</td>
+          <td>${e.place}</td>
+          <td>${e.prix}</td>
+          <td><span class="badge">${e.variant ? e.variant.length : 0}</span></td>
+          <td>
+            <button class="btn btn--small">Details</button>
+            <button class="btn btn--small">Edit</button>
+            <button class="btn btn--danger btn--small" onclick="supprimerevent(${index})">Delete</button>
+          </td>
+        </tr>
+      `;
+    }
+  });
+}
+
+
 
 
 

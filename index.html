@@ -89,8 +89,7 @@
                 <section class="screen" data-screen="add">
                     <div class="screen__content">
                         <form class="form" id="event-form" >
-                            <!-- Error messages area -->
-                            <div class="alert alert--error is-hidden" id="form-errors"></div>
+  
 
                             <!-- Title -->
                             <div class="form__group">
@@ -157,7 +156,7 @@
                             <fieldset class="variants">
                                 <legend class="variants__title">
                                     Pricing Variants (Optional)
-                                    <button type="button" class="btn btn--small" id="btn-add-variant">+ Add Variant</button>
+                                    <button type="button" class="btn btn--small" id="btn-add-variant" onclick="addvariant()">+ Add Variant</button>
                                 </legend>
                                 
                                 <!-- Variant rows will be appended here by JS -->
@@ -177,6 +176,8 @@
                                     -->
                                 </div>
                             </fieldset>
+                            <!-- Error messages area -->
+                            <div class="alert alert--error is-hidden" id="form-errors"></div>
 
                             <!-- Submit Button -->
                             <div class="form__actions">
@@ -196,6 +197,7 @@
                                 type="text" 
                                 id="search-events" 
                                 class="input" 
+                                oninput="filtrerEvenements()"
                                 placeholder="🔍 Search events by title..."
                             >
                             <select id="sort-events" class="select">
