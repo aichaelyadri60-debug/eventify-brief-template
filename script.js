@@ -1,3 +1,4 @@
+
 function switchScreen(screenId) {
     // TODO:
     const Bouttons =document.querySelectorAll(".sidebar__btn");
@@ -46,8 +47,10 @@ function switchScreen(screenId) {
     }
     if (s.getAttribute("data-screen") === "archive") {
     afficherarchive(); 
-}
     }
+
+    }
+    
 
     
 }
@@ -229,6 +232,7 @@ function supprimerevent(index){
   alert("Événement supprimé !");
    afficherevenements();
    afficherarchive();
+   Statistics();
    
 
 
@@ -410,7 +414,23 @@ function restaurerArchive(index){
    localStorage.setItem("Evenements",JSON.stringify(events));
     afficherarchive();
   afficherevenements();
+  Statistics();
   alert("Événement restauré avec succès !");
 
 }
 
+
+
+function Statistics(){
+  const events =JSON.parse(localStorage.getItem("Evenements"))||[];
+  const totalevents=events.length;
+  const total =document.getElementById("stat-total-events");
+  total.textContent =totalevents;
+}
+
+
+
+
+
+
+Statistics();
