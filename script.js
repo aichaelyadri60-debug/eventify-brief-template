@@ -237,20 +237,12 @@ document.getElementById("sort-events").addEventListener("change", (e) => {
   const value = e.target.value;
   if (value === "title-asc") Sortasc();
   if (value === "title-desc") Sortdesc();
+  if (value === "price-asc") Sortascprice();
 
 });
-function Sortasc(){
-  let events = JSON.parse(localStorage.getItem("Evenements"))||[];
-  const body = document.querySelectorAll(".table__body")[0];
-  for(i =0 ;i<events.length -1 ;i++){
-    for(j=0;j<events.length-i-1 ;j++){
-      if(events[j].titre.toLowerCase() > events[j+1].titre.toLowerCase()){
-        let temp =events[j];
-        events[j]=events[j+1];
-        events[j+1] =temp;
-      }
-    }
-  }
+function affichage(){
+   const events =JSON.parse(localStorage.getItem("Evenements"))||[];
+    const body = document.querySelectorAll(".table__body")[0];
   body.innerHTML = "";
   events.forEach((e, index) => {
     body.innerHTML += `
@@ -269,6 +261,21 @@ function Sortasc(){
     `;
   }); 
 }
+function Sortasc(){
+  let events = JSON.parse(localStorage.getItem("Evenements"))||[];
+
+  for(i =0 ;i<events.length -1 ;i++){
+    for(j=0;j<events.length-i-1 ;j++){
+      if(events[j].titre.toLowerCase() > events[j+1].titre.toLowerCase()){
+        let temp =events[j];
+        events[j]=events[j+1];
+        events[j+1] =temp;
+      }
+    }
+  }
+  localStorage.setItem("Evenements", JSON.stringify(events));
+  affichage();
+}
 
 
 function Sortdesc(){
@@ -276,34 +283,32 @@ function Sortdesc(){
   // console.log(events);
   for(i=0;i<events.length-1;i++){
     for(j=0;j<events.length-i-1;j++){
-      if(events[j].titre.toLowerCase()<events[j+1].titre.toLowerCase()){
+      if(events[j].titre.toLowerCase() < events[j+1].titre.toLowerCase()){
         let temp =events[j];
         events[j]=events[j+1];
         events[j+1]=temp;
       }
     }
   }
-
-  const body =document.querySelectorAll(".table__body")[0];
-    // console.log(body);
-     body.innerHTML = "";
-  events.forEach((e,index) => {
-    body.innerHTML +=`<tr class="table__row" data-event-id="${index}">
-                                    <td>${index+1}</td>
-                                    <td>${e.titre}</td>
-                                    <td>${e.place}</td>
-                                    <td>${e.prix}</td>
-                                    <td><span class="badge">${e.variant?e.variant.length:0}</span></td>
-                                    <td>
-                                        <button class="btn btn--small" data-action="details" >Details</button>
-                                        <button class="btn btn--small" data-action="edit" >Edit</button>
-                                        <button class="btn btn--danger btn--small" data-action="archive" "onclick="supprimerevent(${index})">Delete</button>
-                                    </td>
-                                </tr>`
-
-  });
+  localStorage.setItem("Evenements", JSON.stringify(events));
+  affichage();
 }
 
+
+  function Sortascprice(){
+    const events =JSON.parse(localStorage.getItem("Evenements"))||[];
+     for(i=0;i<events.length-1;i++){
+    for(j=0;j<events.length-i-1;j++){
+      if(Number(events[j].prix) > Number(events[j+1].prix)){
+        let temp =events[j];
+        events[j]=events[j+1];
+        events[j+1]=temp;
+      }
+    }
+  }
+  localStorage.setItem("Evenements", JSON.stringify(events));
+  affichage();
+  }
 
 
 
