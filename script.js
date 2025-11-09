@@ -44,11 +44,6 @@ function switchScreen(screenId) {
 }
 
 
-
-
-
-
-
 function addvariant(){
   const parent =document.getElementById("variants-list");
   const enfant =document.createElement('div');
@@ -68,65 +63,119 @@ function addvariant(){
 
 }
 
-
-
-
-
 function RemoveVariant(element){
   const parent =element.closest(".variant-row");
   parent.remove();
 }
 
-
-
-
-
 const formulaire = document.getElementById("event-form");
-
+let id;
 formulaire.addEventListener("submit", (e) => {
   e.preventDefault();
 
-  const Title = document.getElementById("event-title").value;
-  const image = document.getElementById("event-image").value;
-  const Description = document.getElementById("event-description").value;
-  const Seats = document.getElementById("event-seats").value;
-  const Price = document.getElementById("event-price").value;
+  const Title = document.getElementById("event-title");
+  const image = document.getElementById("event-image");
+  const Description = document.getElementById("event-description");
+  const Seats = document.getElementById("event-seats");
+  const Price = document.getElementById("event-price");
   const rows = document.querySelectorAll(".variant-row");
+  const rgximg =/^https?:\/\/[^?]+\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?(#.*)?$/i;
+  let isValid = true;
+
+
   
   const variant =[];
   const erreur = document.getElementById("form-errors");
+    erreur.innerHTML = "";
 
+  if(Title.value.trim() === ""){
+    erreur.innerHTML += `<span>the title is empty</br> </span>`;
+    isValid = false;
+  }
 
-  rows.forEach(row => {
-    const row_name =row.querySelector(".variant-row__name").value;
-    const row__qty =row.querySelector(".variant-row__qty").value;
-    const row__value =row.querySelector(".variant-row__value").value;
-    const row__type=row.querySelector(".variant-row__type").value;
-    variant.push({row_name , row__qty , row__value , row__type})
+  // if(!rgximg.test(image.value.trim())){
+  //    erreur.innerHTML += `<span>the url is invalid</br> </span>`;
+  //     isValid = false;
+  // }
+    if(Description.value.trim() === ""){
+    erreur.innerHTML += `<span>the description  is empty</br> </span>`;
+    isValid = false;
+  }
+  rows.forEach((row, index) => {
+  const row_name = row.querySelector(".variant-row__name");
+  const row_qty = row.querySelector(".variant-row__qty");
+  const row_value = row.querySelector(".variant-row__value");
+  const row_type = row.querySelector(".variant-row__type");
+
+  if (row_name.value.trim() === "") {
+    erreur.innerHTML += `<span>Variant #${index + 1}: Name is required.</span><br>`;
+    isValid = false;
+  }
+
+  if (Number(row_qty.value) <= 0 || row_qty.value.trim() === "") {
+    erreur.innerHTML += `<div>Variant #${index + 1}: Quantity must be positive.</div>`;
+    isValid = false;
+  }
+
+  if (Number(row_value.value) < 0 || row_value.value.trim() === "") {
+    erreur.innerHTML += `<div>Variant #${index + 1}: Value must be valid.</div>`;
+    isValid = false;
+  }
+
+  variant.push({
+    id: index + 1,
+    row_name: row_name.value,
+    row_qty: row_qty.value,
+    row_value: row_value.value,
+    row_type: row_type.value,
   });
+});
 
 
-  
-  
+
+   if (!isValid) {
+   erreur.classList.remove("is-hidden");
+  erreur.classList.remove("alert--success");
+    erreur.classList.add("alert--error");
+
+   setTimeout(() => {
+            erreur.innerHTML = "";
+            erreur.classList.add("is-hidden");
+        }, 4000);
+    return; 
+  }
 
 
   const evenement ={
-    Title ,
-    image ,
-    Description ,
-    Seats ,
-    Price ,
+    id: id++ ,
+    titre :Title.value ,
+    img :image.value ,
+    dsce :Description.value ,
+    place :Seats.value ,
+    prix :Price.value ,
     variant
 
   }
+
+
+    erreur.innerHTML = "";
+    erreur.innerHTML += "Form submitted successfully!";
+    erreur.classList.remove("is-hidden");
+    erreur.classList.add("alert--success");
+    erreur.classList.remove("alert--error");
+    setTimeout(() => {
+         erreur.classList.add("is-hidden");
+         erreur.innerHTML = "";
+}, 4000);
+
 
   let allevent = JSON.parse(localStorage.getItem("Evenements"))||[];
   allevent.push(evenement);
 
   localStorage.setItem("Evenements", JSON.stringify(allevent));
-  alert(" Événement ajouté avec succès !");
   formulaire.reset(); 
   document.getElementById("variants-list").innerHTML = ""; 
 
-
 })
+
+
