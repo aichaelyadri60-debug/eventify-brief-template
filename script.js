@@ -238,6 +238,8 @@ document.getElementById("sort-events").addEventListener("change", (e) => {
   if (value === "title-asc") Sortasc();
   if (value === "title-desc") Sortdesc();
   if (value === "price-asc") Sortascprice();
+  if (value === "price-desc") Sortdescprice();
+  if (value === "seats-asc") Sortascseats();
 
 });
 function affichage(){
@@ -324,6 +326,21 @@ function Sortdesc(){
   }
   localStorage.setItem("Evenements", JSON.stringify(events));
   affichage();
+  }
+
+  function Sortascseats(){
+    const events =JSON.parse(localStorage.getItem("Evenements"))||[];
+    for(i=0;i<events.length-1;i++){
+      for(j=0;j<events.length-i-1;j++){
+        if(Number(events[j].place) > Number(events[j+1].place)){
+          let temp =events[j];
+          events[j]=events[j+1];
+          events[j+1]=temp;
+      }
+      }
+    }
+    localStorage.setItem("Evenements",JSON.stringify(events));
+    affichage();
   }
 
 
