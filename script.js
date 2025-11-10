@@ -1,4 +1,5 @@
 
+
 function switchScreen(screenId) {
     // TODO:
     const Bouttons =document.querySelectorAll(".sidebar__btn");
@@ -41,9 +42,8 @@ function switchScreen(screenId) {
             
         }
          if (s.getAttribute("data-screen") === "list") {
+
       afficherevenements(); 
-
-
     }
     if (s.getAttribute("data-screen") === "archive") {
     afficherarchive(); 
@@ -375,10 +375,36 @@ function filtrerEvenements() {
       `;
     }
   });
+      afficherevenements(); 
+    }
+
+    
+
+
+
+function addvariant(){
+  const parent =document.getElementById("variants-list");
+  const enfant =document.createElement('div');
+  enfant.classList.add("variant-row");
+  enfant.innerHTML =`<input type="text" class="input variant-row__name" placeholder="Variant name (e.g., 'Early Bird')" />
+  <input type="number" class="input variant-row__qty" placeholder="Qty" min="1" />
+  <input type="number" class="input variant-row__value" placeholder="Value" step="0.01" />
+  <select class="select variant-row__type">
+  <option value="fixed">Fixed Price</option>
+  <option value="percentage">Percentage Off</option>
+  </select>
+  <button type="button" class="btn btn--danger btn--small variant-row__remove" onclick="RemoveVariant(this)">Remove</button>
+  `
+
+    parent.appendChild(enfant);
+
+
 }
 
-
-
+function RemoveVariant(element){
+  const parent =element.closest(".variant-row");
+  parent.remove();
+}
 
 
 
@@ -457,9 +483,46 @@ function Statistics(){
 
 }
 
-
-
-
-
-
 Statistics();
+
+function afficherevenements() {
+  const body = document.querySelector(".table__body");
+  const data = JSON.parse(localStorage.getItem("Evenements")) || [];
+
+  body.innerHTML = ""; 
+
+  data.forEach((e, index) => {
+    body.innerHTML += `
+      <tr class="table__row" data-event-id="${index}">
+        <td>${index +1}</td>
+        <td>${e.titre}</td>
+        <td>${e.place}</td>
+        <td>${e.prix}</td>
+        <td><span class="badge">${e.variant ? e.variant.length : 0}</span></td>
+        <td>
+          <button class="btn btn--small" data-action="details" data-event-id="${index}">Details</button>
+          <button class="btn btn--small" data-action="edit" data-event-id="${index}">Edit</button>
+          <button class="btn btn--danger btn--small" data-action="archive" data-event-id="${index}" onclick="supprimerevent(${index})">Delete</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+function supprimerevent(index){
+   let events = JSON.parse(localStorage.getItem("Evenements")) || [];
+   let archives = JSON.parse(localStorage.getItem("Archives")) || [];
+   const parent =document.querySelector(".table__row")[index];
+   const suppression =events.splice(index ,1)[0];
+   archives.push(suppression);
+
+   localStorage.setItem("Evenements" ,JSON.stringify(events));
+   localStorage.setItem("archives",JSON.stringify(archives));
+
+
+  
+  alert("Événement supprimé !");
+   afficherevenements();
+   
+}
+
