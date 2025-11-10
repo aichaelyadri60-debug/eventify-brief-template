@@ -81,7 +81,6 @@ function RemoveVariant(element){
 }
 
 const formulaire = document.getElementById("event-form");
-let id=1;
 formulaire.addEventListener("submit", (e) => {
   e.preventDefault();
 
@@ -105,10 +104,10 @@ formulaire.addEventListener("submit", (e) => {
     isValid = false;
   }
 
-  // if(!rgximg.test(image.value.trim())){
-  //    erreur.innerHTML += `<span>the url is invalid</br> </span>`;
-  //     isValid = false;
-  // }
+  if(!rgximg.test(image.value.trim())){
+     erreur.innerHTML += `<span>the url is invalid</br> </span>`;
+      isValid = false;
+  }
     if(Description.value.trim() === ""){
     erreur.innerHTML += `<span>the description  is empty</br> </span>`;
     isValid = false;
@@ -159,7 +158,6 @@ formulaire.addEventListener("submit", (e) => {
 
 
   const evenement ={
-    id: id++ ,
     titre :Title.value ,
     img :image.value ,
     dsce :Description.value ,
@@ -210,32 +208,38 @@ function afficherevenements() {
         <td>
           <button class="btn btn--small" data-action="details" data-event-id="${index}">Details</button>
           <button class="btn btn--small" data-action="edit" data-event-id="${index}">Edit</button>
-          <button class="btn btn--danger btn--small" data-action="archive" data-event-id="${index}" onclick="supprimerevent(${index})">Delete</button>
+          <button class="btn btn--danger btn--small" data-action="archive" data-event-id="${index}" onclick="supprimerevent(this)">Delete</button>
         </td>
       </tr>
     `;
   });
 }
+function supprimerevent(element) {
+  let events = JSON.parse(localStorage.getItem("Evenements")) || [];
+  let archives = JSON.parse(localStorage.getItem("archives")) || [];
 
-function supprimerevent(index){
-   let events = JSON.parse(localStorage.getItem("Evenements")) || [];
-   let archives = JSON.parse(localStorage.getItem("archives")) || [];
-   const suppression =events.splice(index ,1)[0];
-   archives.push(suppression);
+  let parent = element.closest(".table__row");
 
-   localStorage.setItem("Evenements" ,JSON.stringify(events));
-   localStorage.setItem("archives",JSON.stringify(archives));
+  let titre = parent.querySelector("td:nth-child(2)").textContent.trim();
 
+  let array = [];
+  for (i = 0; i < events.length; i++) {
+    if (events[i].titre === titre) {
+      archives[archives.length] = events[i];
+    } else {
+      array[array.length] = events[i];
+    }
+  }
 
-  
+  localStorage.setItem("Evenements", JSON.stringify(array));
+  localStorage.setItem("archives", JSON.stringify(archives));
+
   alert("Événement supprimé !");
-   afficherevenements();
-   afficherarchive();
-   Statistics();
-   
-
-
+  afficherevenements();
+  afficherarchive();
+  Statistics();
 }
+
 document.getElementById("sort-events").addEventListener("change", (e) => {
   const value = e.target.value;
   if (value === "title-asc") Sortasc();
@@ -260,7 +264,7 @@ function affichage(){
         <td>
           <button class="btn btn--small" data-action="details">Details</button>
           <button class="btn btn--small" data-action="edit">Edit</button>
-          <button class="btn btn--danger btn--small" onclick="supprimerevent(${index})">Delete</button>
+          <button class="btn btn--danger btn--small" onclick="supprimerevent(this)">Delete</button>
         </td>
       </tr>
     `;
@@ -365,7 +369,7 @@ function filtrerEvenements() {
           <td>
             <button class="btn btn--small">Details</button>
             <button class="btn btn--small">Edit</button>
-            <button class="btn btn--danger btn--small" onclick="supprimerevent(${index})">Delete</button>
+            <button class="btn btn--danger btn--small" onclick="supprimerevent(this)">Delete</button>
           </td>
         </tr>
       `;
@@ -393,7 +397,7 @@ function afficherarchive(){
                                     <td>${a.place}</td>
                                     <td>${a.prix}  $</td>
                                     <td>
-                                        <button class="btn btn--small" data-action="restore" data-event-id="${index}" onclick="restaurerArchive(${index})">Restore</button>
+                                        <button class="btn btn--small" data-action="restore" data-event-id="${index}" onclick="restaurerArchive(this)">Restore</button>
                                     </td>
                           </tr>`
   });
@@ -402,19 +406,29 @@ function afficherarchive(){
 
 
 
-function restaurerArchive(index){
+function restaurerArchive(element){
   const archives =JSON.parse(localStorage.getItem("archives"))||[];
   const events =JSON.parse(localStorage.getItem("Evenements"))||[];
-  const restore =archives.splice(index,1)[0];
-  events.push(restore);
+  const parent =element.closest(".table__row");
+  let titre = parent.querySelector("td:nth-child(2)").textContent.trim();
+  let array =[];
+  for(i=0;i<archives.length;i++){
+    if(archives[i].titre === titre){
+      events[events.length] = archives[i];
+    }else{
+      array[array.length] = archives[i];
+    }
+  }
+  // const restore =archives.splice(index,1)[0];
+  // events.push(restore);
 
 
-  localStorage.setItem("archives",JSON.stringify(archives));
+  localStorage.setItem("archives",JSON.stringify(array));
    localStorage.setItem("Evenements",JSON.stringify(events));
     afficherarchive();
-  afficherevenements();
-  Statistics();
-  alert("Événement restauré avec succès !");
+    afficherevenements();
+    Statistics();
+    alert("Événement restauré avec succès !");
 
 }
 
