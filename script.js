@@ -41,18 +41,13 @@ function switchScreen(screenId) {
             
         }
          if (s.getAttribute("data-screen") === "list") {
-
-      afficherevenements(); 
+          afficherevenements(); 
+        }
+        if (s.getAttribute("data-screen") === "archive") {
+          afficherarchive(); 
+        }
+      }
     }
-    if (s.getAttribute("data-screen") === "archive") {
-    afficherarchive(); 
-    }
-
-    }
-    
-
-    
-}
 
 
 function addvariant(){
@@ -199,28 +194,31 @@ function afficherevenements() {
   data.forEach((e, index) => {
     body.innerHTML += `
       <tr class="table__row" data-event-id="${index}">
-        <td>${index +1}</td>
+        <td>${index+1}</td>
         <td>${e.titre}</td>
         <td>${e.place}</td>
         <td>${e.prix}  $</td>
         <td><span class="badge">${e.variant ? e.variant.length : 0}</span></td>
         <td>
-          <button class="btn btn--small" data-action="details" data-event-id="${index}">Details</button>
-          <button class="btn btn--small" data-action="edit" data-event-id="${index}">Edit</button>
+          <button class="btn btn--small" data-action="details" data-event-id="${index}" onclick="detailsevent(this)">Details</button>
+          <button class="btn btn--small" data-action="edit" data-event-id="${index}" onclick="modifierevent(this)">Edit</button>
           <button class="btn btn--danger btn--small" data-action="archive" data-event-id="${index}" onclick="supprimerevent(this)">Delete</button>
         </td>
       </tr>
     `;
   });
 }
+
+
 function supprimerevent(element) {
+
   let events = JSON.parse(localStorage.getItem("Evenements")) || [];
   let archives = JSON.parse(localStorage.getItem("archives")) || [];
+  
 
   let parent = element.closest(".table__row");
 
   let titre = parent.querySelector("td:nth-child(2)").textContent.trim();
-
   let array = [];
   for (i = 0; i < events.length; i++) {
     if (events[i].titre === titre) {
@@ -238,6 +236,34 @@ function supprimerevent(element) {
   afficherarchive();
   Statistics();
 }
+
+function detailsevent(elm) {
+  const events = JSON.parse(localStorage.getItem("Evenements")) || [];
+  const parent = elm.closest(".table__row");
+  const titre = parent.querySelector("td:nth-child(2)").textContent.trim();
+  const modal = document.querySelector(".modal");
+  const modalbody = document.getElementById("modal-body");
+events.forEach((e) => {
+    if ( e.titre === titre) {
+      modal.classList.remove("is-hidden");
+      modalbody.innerHTML = `<h3>${e.titre}</h3>
+        <p><strong>Places :</strong> ${e.place}</p>
+        <p><strong>Variant :</strong> ${e.variant ? e.variant.length : 0}</p>
+        <p><strong>Prix :</strong> ${e.prix} $</p>
+        <p><strong>Description :</strong> ${e.dsce}</p>
+      `;
+    }
+  }
+)
+}
+
+
+function closemodel(){
+  const modal = document.querySelector(".modal");
+  modal.classList.add("is-hidden");
+}
+
+
 
 document.getElementById("sort-events").addEventListener("change", (e) => {
   const value = e.target.value;
@@ -261,14 +287,17 @@ function affichage(){
         <td>${e.prix}  $</td>
         <td><span class="badge">${e.variant ? e.variant.length : 0}</span></td>
         <td>
-          <button class="btn btn--small" data-action="details">Details</button>
-          <button class="btn btn--small" data-action="edit">Edit</button>
+          <button class="btn btn--small" data-action="details" onclick="detailsevent(this)">Details</button>
+          <button class="btn btn--small" data-action="edit" >Edit</button>
           <button class="btn btn--danger btn--small" onclick="supprimerevent(this)">Delete</button>
         </td>
       </tr>
     `;
   }); 
 }
+
+
+
 function Sortasc(){
   let events = JSON.parse(localStorage.getItem("Evenements"))||[];
 
@@ -366,7 +395,7 @@ function filtrerEvenements() {
           <td>${e.prix}   $</td>
           <td><span class="badge">${e.variant ? e.variant.length : 0}</span></td>
           <td>
-            <button class="btn btn--small">Details</button>
+            <button class="btn btn--small" onclick="detailsevent(this)">Details</button>
             <button class="btn btn--small">Edit</button>
             <button class="btn btn--danger btn--small" onclick="supprimerevent(this)">Delete</button>
           </td>
@@ -413,7 +442,8 @@ function RemoveVariant(element){
 
 function afficherarchive(){
   const archives =JSON.parse(localStorage.getItem("archives"))||[];
-  const body =document.querySelector(".table__body")[1];
+  const body =document.querySelectorAll(".table__body")[1];
+  // console.log(body)
    body.innerHTML = "";
   archives.forEach((a,index) => {
     body.innerHTML +=`<tr class="table__row" data-event-id="${index}">
@@ -484,45 +514,3 @@ function Statistics(){
 }
 
 Statistics();
-
-function afficherevenements() {
-  const body = document.querySelector(".table__body");
-  const data = JSON.parse(localStorage.getItem("Evenements")) || [];
-
-  body.innerHTML = ""; 
-
-  data.forEach((e, index) => {
-    body.innerHTML += `
-      <tr class="table__row" data-event-id="${index}">
-        <td>${index +1}</td>
-        <td>${e.titre}</td>
-        <td>${e.place}</td>
-        <td>${e.prix}</td>
-        <td><span class="badge">${e.variant ? e.variant.length : 0}</span></td>
-        <td>
-          <button class="btn btn--small" data-action="details" data-event-id="${index}">Details</button>
-          <button class="btn btn--small" data-action="edit" data-event-id="${index}">Edit</button>
-          <button class="btn btn--danger btn--small" data-action="archive" data-event-id="${index}" onclick="supprimerevent(${index})">Delete</button>
-        </td>
-      </tr>
-    `;
-  });
-}
-
-function supprimerevent(index){
-   let events = JSON.parse(localStorage.getItem("Evenements")) || [];
-   let archives = JSON.parse(localStorage.getItem("Archives")) || [];
-   const parent =document.querySelector(".table__row")[index];
-   const suppression =events.splice(index ,1)[0];
-   archives.push(suppression);
-
-   localStorage.setItem("Evenements" ,JSON.stringify(events));
-   localStorage.setItem("archives",JSON.stringify(archives));
-
-
-  
-  alert("Événement supprimé !");
-   afficherevenements();
-   
-}
-
