@@ -180,6 +180,7 @@ formulaire.addEventListener("submit", (e) => {
   formulaire.reset(); 
   document.getElementById("variants-list").innerHTML = ""; 
   afficherevenements();
+  Statistics();
 
 })
 
@@ -263,6 +264,74 @@ function closemodel(){
   modal.classList.add("is-hidden");
 }
 
+
+
+function modifierevent(elm){
+  const events = JSON.parse(localStorage.getItem("Evenements")) || [];
+  const parent = elm.closest(".table__row");
+  const titre = parent.querySelector("td:nth-child(2)").textContent.trim();
+  const modal = document.querySelector(".modal");
+  const modalbody = document.getElementById("modal-body");
+events.forEach((e,index) => {
+    if ( e.titre === titre) {
+      modal.classList.remove("is-hidden");
+modalbody.innerHTML = `
+  <h3>Modifier l'événement</h3>
+  <div class="form-group">
+    <label>Titre :</label>
+    <input type="text" id="edit-titre" class="input" value="${e.titre}" />
+  </div>
+
+  <div class="form-group">
+    <label>Nombre de places :</label>
+    <input type="number" id="edit-place" class="input" value="${e.place}" />
+  </div>
+
+  <div class="form-group">
+    <label>Prix :</label>
+    <input type="number" id="edit-prix" class="input" value="${e.prix}" step="0.01" />
+  </div>
+
+  <div class="form-group">
+    <label>Description :</label>
+    <textarea id="edit-dsce" class="input">${e.dsce}</textarea>
+  </div>
+
+  <div class="form-group">
+    <label>Image (URL) :</label>
+    <input type="text" id="edit-img" class="input" value="${e.img}" />
+  </div></br></br>
+
+  <button class="btn btn--primary" onclick="saveModification(${index})">Sauvegarder</button>
+`;
+
+    }
+  })
+
+
+
+}
+
+function saveModification(index) {
+  const events = JSON.parse(localStorage.getItem("Evenements")) || [];
+
+  const titre = document.getElementById("edit-titre").value.trim();
+  const place = document.getElementById("edit-place").value.trim();
+  const prix = document.getElementById("edit-prix").value.trim();
+  const dsce = document.getElementById("edit-dsce").value.trim();
+  const img = document.getElementById("edit-img").value.trim();
+
+  events[index].titre = titre;
+  events[index].place = place;
+  events[index].prix = prix;
+  events[index].dsce = dsce;
+  events[index].img = img;
+
+  localStorage.setItem("Evenements", JSON.stringify(events));
+
+  document.querySelector(".modal").classList.add("is-hidden");
+  afficherevenements();
+}
 
 
 document.getElementById("sort-events").addEventListener("change", (e) => {
