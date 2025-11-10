@@ -1,5 +1,4 @@
 
-
 function switchScreen(screenId) {
     // TODO:
     const Bouttons =document.querySelectorAll(".sidebar__btn");
@@ -411,10 +410,10 @@ function RemoveVariant(element){
 
 
 
+
 function afficherarchive(){
   const archives =JSON.parse(localStorage.getItem("archives"))||[];
-  const body =document.querySelectorAll(".table__body")[1];
-  // console.log(body)
+  const body =document.querySelector(".table__body")[1];
    body.innerHTML = "";
   archives.forEach((a,index) => {
     body.innerHTML +=`<tr class="table__row" data-event-id="${index}">
@@ -424,6 +423,7 @@ function afficherarchive(){
                                     <td>${a.prix}  $</td>
                                     <td>
                                         <button class="btn btn--small" data-action="restore" data-event-id="${index}" onclick="restaurerArchive(this)">Restore</button>
+
                                     </td>
                           </tr>`
   });
