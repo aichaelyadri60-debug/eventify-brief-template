@@ -77,11 +77,16 @@
                                 <p class="stat-card__value" id="stat-total-price">$0</p>
                             </article>
                         </div>
+                        <div>
+                            <canvas id="myChart"></canvas>
+                        </div>
 
                         <!-- Placeholder for chart (students can add Chart.js or similar) -->
-                        <div class="chart-placeholder">
+                        <!-- <div class="chart-placeholder">
+                            <canvas class="chart-placeholder" width="400" height="200"></canvas>
+
                             <p class="text-muted">📈 Chart will be rendered here by JavaScript</p>
-                        </div>
+                        </div> -->
                     </div>
                 </section>
 
@@ -182,7 +187,7 @@
                             <!-- Submit Button -->
                             <div class="form__actions">
                                 <button type="submit" class="btn btn--primary">Create Event</button>
-                                <button type="reset" class="btn btn--ghost">Clear</button>
+                                <button type="reset" id="monBouton" class="btn btn--ghost">Clear</button>
                             </div>
                         </form>
                     </div>
@@ -317,7 +322,11 @@
 
     const sampleArchive = [];
     -->
-<script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script  src="script.js" defer></script>
+<script>
+
+</script>
    
 </body>
 </html>

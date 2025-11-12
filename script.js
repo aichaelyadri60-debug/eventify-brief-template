@@ -174,7 +174,16 @@ formulaire.addEventListener("submit", (e) => {
 
 
   let allevent = JSON.parse(localStorage.getItem("Evenements"))||[];
-  allevent.push(evenement);
+  const editIndex = formulaire.getAttribute("data-edit-index");
+  if (editIndex !== null) {
+    allevent[editIndex] = evenement;
+    formulaire.removeAttribute("data-edit-index");
+    const button =formulaire.querySelector(".btn--primary");
+    // console.log(button);
+    button.textContent = "Add Event";
+  } else {
+    allevent.push(evenement);
+  }
 
   localStorage.setItem("Evenements", JSON.stringify(allevent));
   formulaire.reset(); 
@@ -264,74 +273,119 @@ function closemodel(){
   modal.classList.add("is-hidden");
 }
 
-
-
-function modifierevent(elm){
+function modifierevent(elm) {
   const events = JSON.parse(localStorage.getItem("Evenements")) || [];
-  const parent = elm.closest(".table__row");
-  const titre = parent.querySelector("td:nth-child(2)").textContent.trim();
-  const modal = document.querySelector(".modal");
-  const modalbody = document.getElementById("modal-body");
-events.forEach((e,index) => {
-    if ( e.titre === titre) {
-      modal.classList.remove("is-hidden");
-modalbody.innerHTML = `
-  <h3>Modifier l'événement</h3>
-  <div class="form-group">
-    <label>Titre :</label>
-    <input type="text" id="edit-titre" class="input" value="${e.titre}" />
-  </div>
+  const index = elm.getAttribute("data-event-id");
+  const e = events[index];
 
-  <div class="form-group">
-    <label>Nombre de places :</label>
-    <input type="number" id="edit-place" class="input" value="${e.place}" />
-  </div>
-
-  <div class="form-group">
-    <label>Prix :</label>
-    <input type="number" id="edit-prix" class="input" value="${e.prix}" step="0.01" />
-  </div>
-
-  <div class="form-group">
-    <label>Description :</label>
-    <textarea id="edit-dsce" class="input">${e.dsce}</textarea>
-  </div>
-
-  <div class="form-group">
-    <label>Image (URL) :</label>
-    <input type="text" id="edit-img" class="input" value="${e.img}" />
-  </div></br></br>
-
-  <button class="btn btn--primary" onclick="saveModification(${index})">Sauvegarder</button>
-`;
-
-    }
-  })
+  const addScreen = document.querySelector('[data-screen="add"]');
+  switchScreen(addScreen);
 
 
+  document.getElementById("event-title").value = e.titre;
+  document.getElementById("event-image").value = e.img;
+  document.getElementById("event-description").value = e.dsce;
+  document.getElementById("event-seats").value = e.place;
+  document.getElementById("event-price").value = e.prix;
 
+
+  const variantsList = document.getElementById("variants-list");
+  variantsList.innerHTML = "";
+  if (e.variant && e.variant.length > 0) {
+    e.variant.forEach(v => {
+      const div = document.createElement("div");
+      div.classList.add("variant-row");
+      div.innerHTML = `
+        <input type="text" class="input variant-row__name" value="${v.row_name}" />
+        <input type="number" class="input variant-row__qty" value="${v.row_qty}" />
+        <input type="number" class="input variant-row__value" value="${v.row_value}" />
+        <select class="select variant-row__type">
+          <option value="fixed" ${v.row_type === "fixed" ? "selected" : ""}>Fixed Price</option>
+          <option value="percentage" ${v.row_type === "percentage" ? "selected" : ""}>Percentage </option>
+        </select>
+        <button type="button" class="btn btn--danger btn--small" onclick="RemoveVariant(this)">Remove</button>
+      `;
+      variantsList.appendChild(div);
+    });
+  }
+
+
+  const form = document.getElementById("event-form");
+  form.setAttribute("data-edit-index", index);
+
+
+  const submitButton = form.querySelector(".btn--primary");
+  submitButton.textContent = "Sauvegarder";
 }
 
-function saveModification(index) {
-  const events = JSON.parse(localStorage.getItem("Evenements")) || [];
 
-  const titre = document.getElementById("edit-titre").value.trim();
-  const place = document.getElementById("edit-place").value.trim();
-  const prix = document.getElementById("edit-prix").value.trim();
-  const dsce = document.getElementById("edit-dsce").value.trim();
-  const img = document.getElementById("edit-img").value.trim();
 
-  events[index].titre = titre;
-  events[index].place = place;
-  events[index].prix = prix;
-  events[index].dsce = dsce;
-  events[index].img = img;
+// function modifierevent(elm){
+//   const events = JSON.parse(localStorage.getItem("Evenements")) || [];
+//   const parent = elm.closest(".table__row");
+//   const titre = parent.querySelector("td:nth-child(2)").textContent.trim();
+//   const modal = document.querySelector(".modal");
+//   const modalbody = document.getElementById("modal-body");
+// events.forEach((e,index) => {
+//     if ( e.titre === titre) {
+//       modal.classList.remove("is-hidden");
+// modalbody.innerHTML = `
+//   <h3>Modifier l'événement</h3>
+//   <div class="form-group">
+//     <label>Titre :</label>
+//     <input type="text" id="edit-titre" class="input" value="${e.titre}" />
+//   </div>
 
-  localStorage.setItem("Evenements", JSON.stringify(events));
+//   <div class="form-group">
+//     <label>Nombre de places :</label>
+//     <input type="number" id="edit-place" class="input" value="${e.place}" />
+//   </div>
 
-  document.querySelector(".modal").classList.add("is-hidden");
-  afficherevenements();
-}
+//   <div class="form-group">
+//     <label>Prix :</label>
+//     <input type="number" id="edit-prix" class="input" value="${e.prix}" step="0.01" />
+//   </div>
+
+//   <div class="form-group">
+//     <label>Description :</label>
+//     <textarea id="edit-dsce" class="input">${e.dsce}</textarea>
+//   </div>
+
+//   <div class="form-group">
+//     <label>Image (URL) :</label>
+//     <input type="text" id="edit-img" class="input" value="${e.img}" />
+//   </div></br></br>
+
+//   <button class="btn btn--primary" onclick="saveModification(${index})">Sauvegarder</button>
+// `;
+
+//     }
+//   })
+
+
+
+// }
+
+// function saveModification(index) {
+//   const events = JSON.parse(localStorage.getItem("Evenements")) || [];
+
+//   const titre = document.getElementById("edit-titre").value.trim();
+//   const place = document.getElementById("edit-place").value.trim();
+//   const prix = document.getElementById("edit-prix").value.trim();
+//   const dsce = document.getElementById("edit-dsce").value.trim();
+//   const img = document.getElementById("edit-img").value.trim();
+
+//   events[index].titre = titre;
+//   events[index].place = place;
+//   events[index].prix = prix;
+//   events[index].dsce = dsce;
+//   events[index].img = img;
+
+//   localStorage.setItem("Evenements", JSON.stringify(events));
+
+//   document.querySelector(".modal").classList.add("is-hidden");
+//   afficherevenements();
+// }
 
 
 document.getElementById("sort-events").addEventListener("change", (e) => {
@@ -502,10 +556,6 @@ function RemoveVariant(element){
   const parent =element.closest(".variant-row");
   parent.remove();
 }
-
-
-
-
 
 
 
