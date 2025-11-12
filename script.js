@@ -190,6 +190,7 @@ formulaire.addEventListener("submit", (e) => {
   document.getElementById("variants-list").innerHTML = ""; 
   afficherevenements();
   Statistics();
+  renderGraph();
 
 })
 
@@ -245,6 +246,7 @@ function supprimerevent(element) {
   afficherevenements();
   afficherarchive();
   Statistics();
+  renderGraph();
 }
 
 function detailsevent(elm) {
@@ -529,34 +531,6 @@ function filtrerEvenements() {
       afficherevenements(); 
     }
 
-    
-
-
-
-function addvariant(){
-  const parent =document.getElementById("variants-list");
-  const enfant =document.createElement('div');
-  enfant.classList.add("variant-row");
-  enfant.innerHTML =`<input type="text" class="input variant-row__name" placeholder="Variant name (e.g., 'Early Bird')" />
-  <input type="number" class="input variant-row__qty" placeholder="Qty" min="1" />
-  <input type="number" class="input variant-row__value" placeholder="Value" step="0.01" />
-  <select class="select variant-row__type">
-  <option value="fixed">Fixed Price</option>
-  <option value="percentage">Percentage Off</option>
-  </select>
-  <button type="button" class="btn btn--danger btn--small variant-row__remove" onclick="RemoveVariant(this)">Remove</button>
-  `
-
-    parent.appendChild(enfant);
-
-
-}
-
-function RemoveVariant(element){
-  const parent =element.closest(".variant-row");
-  parent.remove();
-}
-
 
 
 function afficherarchive(){
@@ -594,6 +568,7 @@ function restaurerArchive(element){
       array[array.length] = archives[i];
     }
   }
+
   // const restore =archives.splice(index,1)[0];
   // events.push(restore);
 
@@ -603,6 +578,7 @@ function restaurerArchive(element){
     afficherarchive();
     afficherevenements();
     Statistics();
+    renderGraph();
     alert("Événement restauré avec succès !");
 
 }
@@ -631,5 +607,74 @@ function Statistics(){
    totalprix.textContent ="$ " +prixtotal ;
 
 }
+
+
+
+function renderGraph() {
+  const events = JSON.parse(localStorage.getItem("Evenements")) || [];
+  const ctx = document.querySelector("#myChart");
+
+  if (!ctx) return console.warn("Canvas #myChart introuvable !");
+
+  if (window.myChart instanceof Chart) {
+    window.myChart.destroy();
+  }
+
+  if (events.length === 0) return;
+
+  const labels = [];
+  const dataPlaces = [];
+  const dataPrix = [];
+
+  events.forEach(event => {
+    labels.push(event.titre);
+    dataPlaces.push(Number(event.place));
+    dataPrix.push(Number(event.prix));
+  });
+
+
+  window.myChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [
+        {
+          label: "Places disponibles",
+          data: dataPlaces,
+          backgroundColor: "rgba(54, 162, 235, 0.3)",
+          borderColor: "rgba(54, 162, 235, 1)",
+          borderWidth: 2,
+          fill: true,
+        },
+        {
+          label: "Prix ($)",
+          data: dataPrix,
+          backgroundColor: "rgba(255, 99, 132, 0.3)",
+          borderColor: "rgba(255, 99, 132, 1)",
+          borderWidth: 2,
+          fill: true,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          display: true,
+          position: "top"
+        },
+        title: {
+          display: true,
+          text: "Évolution des places et des prix"
+        }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+}
+
+renderGraph();
 
 Statistics();
