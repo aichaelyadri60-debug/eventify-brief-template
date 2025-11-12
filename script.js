@@ -1,60 +1,63 @@
-
 function switchScreen(screenId) {
-    // TODO:
-    const Bouttons =document.querySelectorAll(".sidebar__btn");
-    const Sections =document.querySelectorAll(".screen");
-    const headerTitle =document.querySelector(".page-title");
-    const suTitle =document.querySelector(".page-subtitle");
-    // console.log(headerTitle.textContent)
-    // console.log(suTitle)
-    const headerTitles = {
-        stats : {
-            title: "Statistics",
-            subTitle: "Overview of your events"
-        },
-        add : {
-            title :  "Add Event",
-            subTitle : "Create and schedule a new event"
-        },
-        list : {
-            title : "Events",
-            subTitle: "Manage your upcoming and active events"
-        },
-        archive : {
-            title : "Archive",
-            subTitle: "View your past and completed events"
-        }
+  // TODO:
+  const Bouttons = document.querySelectorAll(".sidebar__btn");
+  const Sections = document.querySelectorAll(".screen");
+  const headerTitle = document.querySelector(".page-title");
+  const suTitle = document.querySelector(".page-subtitle");
+  // console.log(headerTitle.textContent)
+  // console.log(suTitle)
+  const headerTitles = {
+    stats: {
+      title: "Statistics",
+      subTitle: "Overview of your events",
+    },
+    add: {
+      title: "Add Event",
+      subTitle: "Create and schedule a new event",
+    },
+    list: {
+      title: "Events",
+      subTitle: "Manage your upcoming and active events",
+    },
+    archive: {
+      title: "Archive",
+      subTitle: "View your past and completed events",
+    },
+  };
+  // console.log(headerTitles)
+  for (b of Bouttons) {
+    b.classList.remove("is-active");
+    if (
+      b.getAttribute("data-screen") === screenId.getAttribute("data-screen")
+    ) {
+      b.classList.add("is-active");
     }
-    // console.log(headerTitles)
-    for(b of Bouttons){
-        b.classList.remove('is-active');
-        if(b.getAttribute("data-screen") === screenId.getAttribute("data-screen")){
-            b.classList.add('is-active');
-        }
+  }
+  for (s of Sections) {
+    s.classList.remove("is-visible");
+    if (
+      s.getAttribute("data-screen") === screenId.getAttribute("data-screen")
+    ) {
+      s.classList.add("is-visible");
+      headerTitle.textContent =
+        headerTitles[s.getAttribute("data-screen")].title;
+      suTitle.textContent =
+        headerTitles[s.getAttribute("data-screen")].subTitle;
     }
-    for(s of Sections){
-        s.classList.remove('is-visible');
-        if(s.getAttribute("data-screen") === screenId.getAttribute("data-screen")){
-            s.classList.add('is-visible');
-            headerTitle.textContent =  headerTitles[s.getAttribute("data-screen")].title;
-            suTitle.textContent = headerTitles[s.getAttribute("data-screen")].subTitle;
-            
-        }
-         if (s.getAttribute("data-screen") === "list") {
-          afficherevenements(); 
-        }
-        if (s.getAttribute("data-screen") === "archive") {
-          afficherarchive(); 
-        }
-      }
+    if (s.getAttribute("data-screen") === "list") {
+      afficherevenements();
     }
+    if (s.getAttribute("data-screen") === "archive") {
+      afficherarchive();
+    }
+  }
+}
 
-
-function addvariant(){
-  const parent =document.getElementById("variants-list");
-  const enfant =document.createElement('div');
+function addvariant() {
+  const parent = document.getElementById("variants-list");
+  const enfant = document.createElement("div");
   enfant.classList.add("variant-row");
-  enfant.innerHTML =`<input type="text" class="input variant-row__name" placeholder="Variant name (e.g., 'Early Bird')" />
+  enfant.innerHTML = `<input type="text" class="input variant-row__name" placeholder="Variant name (e.g., 'Early Bird')" />
   <input type="number" class="input variant-row__qty" placeholder="Qty" min="1" />
   <input type="number" class="input variant-row__value" placeholder="Value" step="0.01" />
   <select class="select variant-row__type">
@@ -62,15 +65,13 @@ function addvariant(){
   <option value="percentage">Percentage Off</option>
   </select>
   <button type="button" class="btn btn--danger btn--small variant-row__remove" onclick="RemoveVariant(this)">Remove</button>
-  `
+  `;
 
-    parent.appendChild(enfant);
-
-
+  parent.appendChild(enfant);
 }
 
-function RemoveVariant(element){
-  const parent =element.closest(".variant-row");
+function RemoveVariant(element) {
+  const parent = element.closest(".variant-row");
   parent.remove();
 }
 
@@ -84,101 +85,100 @@ formulaire.addEventListener("submit", (e) => {
   const Seats = document.getElementById("event-seats");
   const Price = document.getElementById("event-price");
   const rows = document.querySelectorAll(".variant-row");
-  const rgximg =/^https?:\/\/[^?]+\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?(#.*)?$/i;
+  const rgximg =
+    /^https?:\/\/[^?]+\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?(#.*)?$/i;
   let isValid = true;
 
-
-  
-  const variant =[];
+  const variant = [];
   const erreur = document.getElementById("form-errors");
-    erreur.innerHTML = "";
+  erreur.innerHTML = "";
 
-  if(Title.value.trim() === ""){
+  if (Title.value.trim() === "") {
     erreur.innerHTML += `<span>the title is empty</br> </span>`;
     isValid = false;
   }
 
-  if(!rgximg.test(image.value.trim())){
-     erreur.innerHTML += `<span>the url is invalid</br> </span>`;
-      isValid = false;
+  if (!rgximg.test(image.value.trim())) {
+    erreur.innerHTML += `<span>the url is invalid</br> </span>`;
+    isValid = false;
   }
-    if(Description.value.trim() === ""){
+  if (Description.value.trim() === "") {
     erreur.innerHTML += `<span>the description  is empty</br> </span>`;
     isValid = false;
   }
   rows.forEach((row, index) => {
-  const row_name = row.querySelector(".variant-row__name");
-  const row_qty = row.querySelector(".variant-row__qty");
-  const row_value = row.querySelector(".variant-row__value");
-  const row_type = row.querySelector(".variant-row__type");
+    const row_name = row.querySelector(".variant-row__name");
+    const row_qty = row.querySelector(".variant-row__qty");
+    const row_value = row.querySelector(".variant-row__value");
+    const row_type = row.querySelector(".variant-row__type");
 
-  if (row_name.value.trim() === "") {
-    erreur.innerHTML += `<span>Variant #${index + 1}: Name is required.</span><br>`;
-    isValid = false;
-  }
+    if (row_name.value.trim() === "") {
+      erreur.innerHTML += `<span>Variant #${
+        index + 1
+      }: Name is required.</span><br>`;
+      isValid = false;
+    }
 
-  if (Number(row_qty.value) <= 0 || row_qty.value.trim() === "") {
-    erreur.innerHTML += `<div>Variant #${index + 1}: Quantity must be positive.</div>`;
-    isValid = false;
-  }
+    if (Number(row_qty.value) <= 0 || row_qty.value.trim() === "") {
+      erreur.innerHTML += `<div>Variant #${
+        index + 1
+      }: Quantity must be positive.</div>`;
+      isValid = false;
+    }
 
-  if (Number(row_value.value) < 0 || row_value.value.trim() === "") {
-    erreur.innerHTML += `<div>Variant #${index + 1}: Value must be valid.</div>`;
-    isValid = false;
-  }
+    if (Number(row_value.value) < 0 || row_value.value.trim() === "") {
+      erreur.innerHTML += `<div>Variant #${
+        index + 1
+      }: Value must be valid.</div>`;
+      isValid = false;
+    }
 
-  variant.push({
-    id: index + 1,
-    row_name: row_name.value,
-    row_qty: row_qty.value,
-    row_value: row_value.value,
-    row_type: row_type.value,
+    variant.push({
+      id: index + 1,
+      row_name: row_name.value,
+      row_qty: row_qty.value,
+      row_value: row_value.value,
+      row_type: row_type.value,
+    });
   });
-});
 
-
-
-   if (!isValid) {
-   erreur.classList.remove("is-hidden");
-  erreur.classList.remove("alert--success");
+  if (!isValid) {
+    erreur.classList.remove("is-hidden");
+    erreur.classList.remove("alert--success");
     erreur.classList.add("alert--error");
 
-   setTimeout(() => {
-            erreur.innerHTML = "";
-            erreur.classList.add("is-hidden");
-        }, 4000);
-    return; 
-  }
-
-
-  const evenement ={
-    titre :Title.value ,
-    img :image.value ,
-    dsce :Description.value ,
-    place :Seats.value ,
-    prix :Price.value ,
-    variant
-
-  }
-
-
-    erreur.innerHTML = "";
-    erreur.innerHTML += "Form submitted successfully!";
-    erreur.classList.remove("is-hidden");
-    erreur.classList.add("alert--success");
-    erreur.classList.remove("alert--error");
     setTimeout(() => {
-         erreur.classList.add("is-hidden");
-         erreur.innerHTML = "";
-    }, 3000);
+      erreur.innerHTML = "";
+      erreur.classList.add("is-hidden");
+    }, 4000);
+    return;
+  }
 
+  const evenement = {
+    titre: Title.value,
+    img: image.value,
+    dsce: Description.value,
+    place: Seats.value,
+    prix: Price.value,
+    variant,
+  };
 
-  let allevent = JSON.parse(localStorage.getItem("Evenements"))||[];
+  erreur.innerHTML = "";
+  erreur.innerHTML += "Form submitted successfully!";
+  erreur.classList.remove("is-hidden");
+  erreur.classList.add("alert--success");
+  erreur.classList.remove("alert--error");
+  setTimeout(() => {
+    erreur.classList.add("is-hidden");
+    erreur.innerHTML = "";
+  }, 3000);
+
+  let allevent = JSON.parse(localStorage.getItem("Evenements")) || [];
   const editIndex = formulaire.getAttribute("data-edit-index");
   if (editIndex !== null) {
     allevent[editIndex] = evenement;
     formulaire.removeAttribute("data-edit-index");
-    const button =formulaire.querySelector(".btn--primary");
+    const button = formulaire.querySelector(".btn--primary");
     // console.log(button);
     button.textContent = "Add Event";
   } else {
@@ -186,26 +186,23 @@ formulaire.addEventListener("submit", (e) => {
   }
 
   localStorage.setItem("Evenements", JSON.stringify(allevent));
-  formulaire.reset(); 
-  document.getElementById("variants-list").innerHTML = ""; 
+  formulaire.reset();
+  document.getElementById("variants-list").innerHTML = "";
   afficherevenements();
   Statistics();
   renderGraph();
-
-})
-
-
+});
 
 function afficherevenements() {
   const body = document.querySelectorAll(".table__body")[0];
   const data = JSON.parse(localStorage.getItem("Evenements")) || [];
 
-  body.innerHTML = ""; 
+  body.innerHTML = "";
 
   data.forEach((e, index) => {
     body.innerHTML += `
       <tr class="table__row" data-event-id="${index}">
-        <td>${index+1}</td>
+        <td>${index + 1}</td>
         <td>${e.titre}</td>
         <td>${e.place}</td>
         <td>${e.prix}  $</td>
@@ -220,12 +217,9 @@ function afficherevenements() {
   });
 }
 
-
 function supprimerevent(element) {
-
   let events = JSON.parse(localStorage.getItem("Evenements")) || [];
   let archives = JSON.parse(localStorage.getItem("archives")) || [];
-  
 
   let parent = element.closest(".table__row");
 
@@ -255,8 +249,8 @@ function detailsevent(elm) {
   const titre = parent.querySelector("td:nth-child(2)").textContent.trim();
   const modal = document.querySelector(".modal");
   const modalbody = document.getElementById("modal-body");
-events.forEach((e) => {
-    if ( e.titre === titre) {
+  events.forEach((e) => {
+    if (e.titre === titre) {
       modal.classList.remove("is-hidden");
       modalbody.innerHTML = `<h3>${e.titre}</h3>
         <p><strong>Places :</strong> ${e.place}</p>
@@ -265,12 +259,10 @@ events.forEach((e) => {
         <p><strong>Description :</strong> ${e.dsce}</p>
       `;
     }
-  }
-)
+  });
 }
 
-
-function closemodel(){
+function closemodel() {
   const modal = document.querySelector(".modal");
   modal.classList.add("is-hidden");
 }
@@ -283,27 +275,35 @@ function modifierevent(elm) {
   const addScreen = document.querySelector('[data-screen="add"]');
   switchScreen(addScreen);
 
-
   document.getElementById("event-title").value = e.titre;
   document.getElementById("event-image").value = e.img;
   document.getElementById("event-description").value = e.dsce;
   document.getElementById("event-seats").value = e.place;
   document.getElementById("event-price").value = e.prix;
 
-
   const variantsList = document.getElementById("variants-list");
   variantsList.innerHTML = "";
   if (e.variant && e.variant.length > 0) {
-    e.variant.forEach(v => {
+    e.variant.forEach((v) => {
       const div = document.createElement("div");
       div.classList.add("variant-row");
       div.innerHTML = `
-        <input type="text" class="input variant-row__name" value="${v.row_name}" />
-        <input type="number" class="input variant-row__qty" value="${v.row_qty}" />
-        <input type="number" class="input variant-row__value" value="${v.row_value}" />
+        <input type="text" class="input variant-row__name" value="${
+          v.row_name
+        }" />
+        <input type="number" class="input variant-row__qty" value="${
+          v.row_qty
+        }" />
+        <input type="number" class="input variant-row__value" value="${
+          v.row_value
+        }" />
         <select class="select variant-row__type">
-          <option value="fixed" ${v.row_type === "fixed" ? "selected" : ""}>Fixed Price</option>
-          <option value="percentage" ${v.row_type === "percentage" ? "selected" : ""}>Percentage </option>
+          <option value="fixed" ${
+            v.row_type === "fixed" ? "selected" : ""
+          }>Fixed Price</option>
+          <option value="percentage" ${
+            v.row_type === "percentage" ? "selected" : ""
+          }>Percentage </option>
         </select>
         <button type="button" class="btn btn--danger btn--small" onclick="RemoveVariant(this)">Remove</button>
       `;
@@ -311,16 +311,12 @@ function modifierevent(elm) {
     });
   }
 
-
   const form = document.getElementById("event-form");
   form.setAttribute("data-edit-index", index);
-
 
   const submitButton = form.querySelector(".btn--primary");
   submitButton.textContent = "Sauvegarder";
 }
-
-
 
 // function modifierevent(elm){
 //   const events = JSON.parse(localStorage.getItem("Evenements")) || [];
@@ -364,8 +360,6 @@ function modifierevent(elm) {
 //     }
 //   })
 
-
-
 // }
 
 // function saveModification(index) {
@@ -389,7 +383,6 @@ function modifierevent(elm) {
 //   afficherevenements();
 // }
 
-
 document.getElementById("sort-events").addEventListener("change", (e) => {
   const value = e.target.value;
   if (value === "title-asc") Sortasc();
@@ -397,11 +390,10 @@ document.getElementById("sort-events").addEventListener("change", (e) => {
   if (value === "price-asc") Sortascprice();
   if (value === "price-desc") Sortdescprice();
   if (value === "seats-asc") Sortascseats();
-
 });
-function affichage(){
-   const events =JSON.parse(localStorage.getItem("Evenements"))||[];
-    const body = document.querySelectorAll(".table__body")[0];
+function affichage() {
+  const events = JSON.parse(localStorage.getItem("Evenements")) || [];
+  const body = document.querySelectorAll(".table__body")[0];
   body.innerHTML = "";
   events.forEach((e, index) => {
     body.innerHTML += `
@@ -418,20 +410,18 @@ function affichage(){
         </td>
       </tr>
     `;
-  }); 
+  });
 }
 
+function Sortasc() {
+  let events = JSON.parse(localStorage.getItem("Evenements")) || [];
 
-
-function Sortasc(){
-  let events = JSON.parse(localStorage.getItem("Evenements"))||[];
-
-  for(i =0 ;i<events.length -1 ;i++){
-    for(j=0;j<events.length-i-1 ;j++){
-      if(events[j].titre.toLowerCase() > events[j+1].titre.toLowerCase()){
-        let temp =events[j];
-        events[j]=events[j+1];
-        events[j+1] =temp;
+  for (i = 0; i < events.length - 1; i++) {
+    for (j = 0; j < events.length - i - 1; j++) {
+      if (events[j].titre.toLowerCase() > events[j + 1].titre.toLowerCase()) {
+        let temp = events[j];
+        events[j] = events[j + 1];
+        events[j + 1] = temp;
       }
     }
   }
@@ -439,16 +429,15 @@ function Sortasc(){
   affichage();
 }
 
-
-function Sortdesc(){
-  const events =JSON.parse(localStorage.getItem("Evenements"))||[];
+function Sortdesc() {
+  const events = JSON.parse(localStorage.getItem("Evenements")) || [];
   // console.log(events);
-  for(i=0;i<events.length-1;i++){
-    for(j=0;j<events.length-i-1;j++){
-      if(events[j].titre.toLowerCase() < events[j+1].titre.toLowerCase()){
-        let temp =events[j];
-        events[j]=events[j+1];
-        events[j+1]=temp;
+  for (i = 0; i < events.length - 1; i++) {
+    for (j = 0; j < events.length - i - 1; j++) {
+      if (events[j].titre.toLowerCase() < events[j + 1].titre.toLowerCase()) {
+        let temp = events[j];
+        events[j] = events[j + 1];
+        events[j + 1] = temp;
       }
     }
   }
@@ -456,53 +445,50 @@ function Sortdesc(){
   affichage();
 }
 
-
-  function Sortascprice(){
-    const events =JSON.parse(localStorage.getItem("Evenements"))||[];
-     for(i=0;i<events.length-1;i++){
-    for(j=0;j<events.length-i-1;j++){
-      if(Number(events[j].prix) > Number(events[j+1].prix)){
-        let temp =events[j];
-        events[j]=events[j+1];
-        events[j+1]=temp;
+function Sortascprice() {
+  const events = JSON.parse(localStorage.getItem("Evenements")) || [];
+  for (i = 0; i < events.length - 1; i++) {
+    for (j = 0; j < events.length - i - 1; j++) {
+      if (Number(events[j].prix) > Number(events[j + 1].prix)) {
+        let temp = events[j];
+        events[j] = events[j + 1];
+        events[j + 1] = temp;
       }
     }
   }
   localStorage.setItem("Evenements", JSON.stringify(events));
   affichage();
-  }
+}
 
-
-    function Sortdescprice(){
-    const events =JSON.parse(localStorage.getItem("Evenements"))||[];
-     for(i=0;i<events.length-1;i++){
-    for(j=0;j<events.length-i-1;j++){
-      if(Number(events[j].prix) < Number(events[j+1].prix)){
-        let temp =events[j];
-        events[j]=events[j+1];
-        events[j+1]=temp;
+function Sortdescprice() {
+  const events = JSON.parse(localStorage.getItem("Evenements")) || [];
+  for (i = 0; i < events.length - 1; i++) {
+    for (j = 0; j < events.length - i - 1; j++) {
+      if (Number(events[j].prix) < Number(events[j + 1].prix)) {
+        let temp = events[j];
+        events[j] = events[j + 1];
+        events[j + 1] = temp;
       }
     }
   }
   localStorage.setItem("Evenements", JSON.stringify(events));
   affichage();
-  }
+}
 
-  function Sortascseats(){
-    const events =JSON.parse(localStorage.getItem("Evenements"))||[];
-    for(i=0;i<events.length-1;i++){
-      for(j=0;j<events.length-i-1;j++){
-        if(Number(events[j].place) > Number(events[j+1].place)){
-          let temp =events[j];
-          events[j]=events[j+1];
-          events[j+1]=temp;
-      }
+function Sortascseats() {
+  const events = JSON.parse(localStorage.getItem("Evenements")) || [];
+  for (i = 0; i < events.length - 1; i++) {
+    for (j = 0; j < events.length - i - 1; j++) {
+      if (Number(events[j].place) > Number(events[j + 1].place)) {
+        let temp = events[j];
+        events[j] = events[j + 1];
+        events[j + 1] = temp;
       }
     }
-    localStorage.setItem("Evenements",JSON.stringify(events));
-    affichage();
   }
-
+  localStorage.setItem("Evenements", JSON.stringify(events));
+  affichage();
+}
 
 function filtrerEvenements() {
   const input = document.getElementById("search-events").value.toLowerCase();
@@ -518,7 +504,9 @@ function filtrerEvenements() {
           <td>${e.titre}</td>
           <td>${e.place}</td>
           <td>${e.prix}   $</td>
-          <td><span class="badge">${e.variant ? e.variant.length : 0}</span></td>
+          <td><span class="badge">${
+            e.variant ? e.variant.length : 0
+          }</span></td>
           <td>
             <button class="btn btn--small" onclick="detailsevent(this)">Details</button>
             <button class="btn btn--small">Edit</button>
@@ -528,19 +516,17 @@ function filtrerEvenements() {
       `;
     }
   });
-      afficherevenements(); 
-    }
+  afficherevenements();
+}
 
-
-
-function afficherarchive(){
-  const archives =JSON.parse(localStorage.getItem("archives"))||[];
-  const body =document.querySelectorAll(".table__body")[1];
+function afficherarchive() {
+  const archives = JSON.parse(localStorage.getItem("archives")) || [];
+  const body = document.querySelectorAll(".table__body")[1];
   // console.log(body)
-   body.innerHTML = "";
-  archives.forEach((a,index) => {
-    body.innerHTML +=`<tr class="table__row" data-event-id="${index}">
-                                    <td>${index+1}</td>
+  body.innerHTML = "";
+  archives.forEach((a, index) => {
+    body.innerHTML += `<tr class="table__row" data-event-id="${index}">
+                                    <td>${index + 1}</td>
                                     <td>${a.titre}</td>
                                     <td>${a.place}</td>
                                     <td>${a.prix}  $</td>
@@ -548,23 +534,20 @@ function afficherarchive(){
                                         <button class="btn btn--small" data-action="restore" data-event-id="${index}" onclick="restaurerArchive(this)">Restore</button>
 
                                     </td>
-                          </tr>`
+                          </tr>`;
   });
-
 }
 
-
-
-function restaurerArchive(element){
-  const archives =JSON.parse(localStorage.getItem("archives"))||[];
-  const events =JSON.parse(localStorage.getItem("Evenements"))||[];
-  const parent =element.closest(".table__row");
+function restaurerArchive(element) {
+  const archives = JSON.parse(localStorage.getItem("archives")) || [];
+  const events = JSON.parse(localStorage.getItem("Evenements")) || [];
+  const parent = element.closest(".table__row");
   let titre = parent.querySelector("td:nth-child(2)").textContent.trim();
-  let array =[];
-  for(i=0;i<archives.length;i++){
-    if(archives[i].titre === titre){
+  let array = [];
+  for (i = 0; i < archives.length; i++) {
+    if (archives[i].titre === titre) {
       events[events.length] = archives[i];
-    }else{
+    } else {
       array[array.length] = archives[i];
     }
   }
@@ -572,43 +555,35 @@ function restaurerArchive(element){
   // const restore =archives.splice(index,1)[0];
   // events.push(restore);
 
-
-  localStorage.setItem("archives",JSON.stringify(array));
-   localStorage.setItem("Evenements",JSON.stringify(events));
-    afficherarchive();
-    afficherevenements();
-    Statistics();
-    renderGraph();
-    alert("Événement restauré avec succès !");
-
+  localStorage.setItem("archives", JSON.stringify(array));
+  localStorage.setItem("Evenements", JSON.stringify(events));
+  afficherarchive();
+  afficherevenements();
+  Statistics();
+  renderGraph();
+  alert("Événement restauré avec succès !");
 }
 
+function Statistics() {
+  const events = JSON.parse(localStorage.getItem("Evenements")) || [];
+  const totalevents = events.length;
+  const total = document.getElementById("stat-total-events");
+  total.textContent = totalevents;
 
+  let places = 0;
+  events.forEach((e) => {
+    places += Number(e.place);
+  });
+  let totalplace = document.getElementById("stat-total-seats");
+  totalplace.textContent = places;
 
-function Statistics(){
-  const events =JSON.parse(localStorage.getItem("Evenements"))||[];
-  const totalevents=events.length;
-  const total =document.getElementById("stat-total-events");
-  total.textContent =totalevents;
-
-  let places=0;
-   events.forEach((e)=>{
-    places +=Number(e.place) ;
-   })
-   let totalplace =document.getElementById("stat-total-seats");
-   totalplace.textContent =places ;
-
-
-   let prixtotal =0;
-   events.forEach((e)=>{
-    prixtotal +=Number(e.prix) ;
-   })
-   let totalprix =document.getElementById("stat-total-price");
-   totalprix.textContent ="$ " +prixtotal ;
-
+  let prixtotal = 0;
+  events.forEach((e) => {
+    prixtotal += Number(e.prix);
+  });
+  let totalprix = document.getElementById("stat-total-price");
+  totalprix.textContent = "$ " + prixtotal;
 }
-
-
 
 function renderGraph() {
   const events = JSON.parse(localStorage.getItem("Evenements")) || [];
@@ -616,22 +591,16 @@ function renderGraph() {
 
   if (!ctx) return console.warn("Canvas #myChart introuvable !");
 
-  if (window.myChart instanceof Chart) {
-    window.myChart.destroy();
-  }
-
   if (events.length === 0) return;
-
   const labels = [];
   const dataPlaces = [];
   const dataPrix = [];
 
-  events.forEach(event => {
+  events.forEach((event) => {
     labels.push(event.titre);
     dataPlaces.push(Number(event.place));
     dataPrix.push(Number(event.prix));
   });
-
 
   window.myChart = new Chart(ctx, {
     type: "bar",
@@ -653,25 +622,25 @@ function renderGraph() {
           borderColor: "rgba(255, 99, 132, 1)",
           borderWidth: 2,
           fill: true,
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          display: true,
-          position: "top"
         },
-        title: {
-          display: true,
-          text: "Évolution des places et des prix"
-        }
-      },
-      scales: {
-        y: { beginAtZero: true }
-      }
-    }
+      ],
+    },
+    // options: {
+    //   responsive: true,
+    //   plugins: {
+    //     legend: {
+    //       display: true,
+    //       position: "top",
+    //     },
+    //     title: {
+    //       display: true,
+    //       text: "Évolution des places et des prix",
+    //     },
+    //   },
+    //   scales: {
+    //     y: { beginAtZero: true },
+    //   },
+    // },
   });
 }
 

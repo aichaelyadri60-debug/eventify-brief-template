@@ -1,9 +1,14 @@
 {
+  
+  "scripts": {
+    "test": "jest --coverage"
+  },
   "dependencies": {
     "@kurkle/color": "^0.4.0",
     "chart.js": "^4.5.1"
   },
   "devDependencies": {
+    "jest": "^30.2.0",
     "typescript": "^5.9.3"
   }
 }
